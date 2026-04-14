@@ -20,9 +20,19 @@ import yaml
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
-# Load .env so ANTHROPIC_API_KEY is available
+# Load .env so ANTHROPIC_API_KEY is available (local dev path)
 from dotenv import load_dotenv
 load_dotenv(PROJECT_ROOT / ".env", override=True)
+
+# Streamlit Cloud path: promote st.secrets -> os.environ so the Anthropic
+# client picks up the key regardless of which page is loaded first.
+import os
+try:
+    for _key in ("ANTHROPIC_API_KEY",):
+        if _key not in os.environ and _key in st.secrets:
+            os.environ[_key] = st.secrets[_key]
+except (FileNotFoundError, KeyError):
+    pass
 
 DATA_DIR = PROJECT_ROOT / "data"
 SYNTHETIC_DIR = DATA_DIR / "synthetic"

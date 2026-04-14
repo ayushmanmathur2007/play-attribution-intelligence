@@ -1,0 +1,19 @@
+offer_id,initiative_id,name,type,start_date,end_date,discount_pct,min_purchase_usd,max_redemptions_per_user,target_markets,target_segments,target_categories,status
+OFFER_001,INIT_001,Diwali Play Points 3x Bonus,PLAY_POINTS_BONUS,2024-10-15,2024-11-15,0.35,0.0,1,"[""IN""]","[""ALL""]","[""ALL""]",COMPLETED
+OFFER_002,INIT_002,Global Holiday Gift Card Bonus,GIFT_CARD_BONUS,2024-12-01,2024-12-31,0.39,0.99,5,"[""ALL""]","[""ALL""]","[""SHO"", ""ENT""]",COMPLETED
+OFFER_003,INIT_003,Win-back Campaign (Lapsed Users),RE_ENGAGEMENT,2024-11-01,2024-12-15,0.36,0.99,1,"[""US"", ""GB"", ""DE""]","[""LAP_30_90"", ""LAP_90""]","[""ALL""]",COMPLETED
+OFFER_004,INIT_004,Subscription Free Trial Push,SUBSCRIPTION_TRIAL,2024-09-01,2024-10-15,0.28,0.99,1,"[""US"", ""JP"", ""KR""]","[""ACT_HIGH"", ""ACT_MED""]","[""ENT"", ""GAM""]",COMPLETED
+OFFER_005,INIT_005,PAUSED Mid-flight Cashback Campaign,CASHBACK,2024-08-01,2024-08-20,0.15,9.99,1,"[""BR"", ""MX""]","[""ALL""]","[""SHO""]",COMPLETED
+OFFER_006,INIT_006,Japan Golden Week Games Promo,DEVELOPER_PROMO,2024-04-27,2024-05-07,0.32,4.99,1,"[""JP""]","[""ALL""]","[""GAM_CAS"", ""GAM_MID"", ""GAM_HRD"", ""GAM_RPG"", ""GAM_STR""]",COMPLETED
+OFFER_007,INIT_007,India Republic Day Offer Blitz,CASHBACK,2024-01-20,2024-02-05,0.15,4.99,1,"[""IN""]","[""ALL""]","[""ALL""]",COMPLETED
+OFFER_008,INIT_008,Play Points Tier Upgrade Event,LOYALTY_TIER_UP,2024-03-01,2024-03-31,0.12,4.99,5,"[""ALL""]","[""PP_ACTIVE"", ""PP_DORMANT""]","[""ALL""]",COMPLETED
+OFFER_009,INIT_009,US Back-to-School Bundle,BUNDLE_OFFER,2024-08-15,2024-09-15,0.37,9.99,5,"[""US""]","[""NEW_0_7"", ""NEW_8_30""]","[""EDU"", ""PRD""]",COMPLETED
+OFFER_010,INIT_010,Korea Chuseok Gaming Festival,DEVELOPER_PROMO,2024-09-14,2024-09-20,0.16,0.0,3,"[""KR""]","[""ALL""]","[""GAM_CAS"", ""GAM_MID"", ""GAM_HRD"", ""GAM_RPG"", ""GAM_STR""]",COMPLETED
+OFFER_011,INIT_011,Black Friday Global Mega Sale,CASHBACK,2024-11-25,2024-12-02,0.17,4.99,1,"[""ALL""]","[""ALL""]","[""SHO"", ""ENT""]",COMPLETED
+OFFER_012,INIT_012,Developer Promo: Indie Games Spotlight,DEVELOPER_PROMO,2024-07-01,2024-07-31,0.14,9.99,1,"[""US"", ""GB"", ""DE"", ""JP""]","[""ALL""]","[""GAM_CAS"", ""GAM_MID""]",COMPLETED
+OFFER_013,INIT_013,Ramadan Special Offers,CASHBACK,2024-03-10,2024-04-09,0.27,4.99,1,"[""TR"", ""ID"", ""EG""]","[""ALL""]","[""ALL""]",COMPLETED
+OFFER_014,INIT_014,New Year Loyalty Boost,PLAY_POINTS_BONUS,2024-12-28,2025-01-15,0.17,0.0,1,"[""ALL""]","[""ALL""]","[""ALL""]",ACTIVE
+OFFER_015,INIT_015,Valentine's Day Gift Card Push,GIFT_CARD_BONUS,2025-02-07,2025-02-16,0.26,0.0,1,"[""US"", ""GB"", ""JP"", ""KR""]","[""ALL""]","[""ENT"", ""SOC""]",ACTIVE
+OFFER_016,INIT_016,Southeast Asia Growth Push,RE_ENGAGEMENT,2025-01-15,2025-03-15,0.3,9.99,5,"[""ID"", ""PH"", ""VN""]","[""ALL""]","[""ALL""]",ACTIVE
+OFFER_017,INIT_017,Premium Tier Retention Program,LOYALTY_TIER_UP,2025-02-01,2025-03-31,0.17,0.0,1,"[""ALL""]","[""ACT_HIGH""]","[""ALL""]",ACTIVE
+OFFER_018,INIT_018,Brazil Carnival Gaming Blast,DEVELOPER_PROMO,2025-02-28,2025-03-05,0.07,0.99,1,"[""BR""]","[""ALL""]","[""GAM_CAS"", ""GAM_MID"", ""GAM_HRD"", ""GAM_RPG"", ""GAM_STR""]",PLANNED

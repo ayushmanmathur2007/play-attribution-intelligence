@@ -1,7 +1,21 @@
 """Play Attribution Intelligence -- Streamlit main app."""
 
+import os
 import streamlit as st
 from pathlib import Path
+
+# ---------------------------------------------------------------------------
+# Secrets bridge: on Streamlit Cloud secrets live in st.secrets, locally they
+# live in .env. Copy any keys from st.secrets into os.environ so downstream
+# code that reads `ANTHROPIC_API_KEY` via os.environ keeps working.
+# ---------------------------------------------------------------------------
+try:
+    for _key in ("ANTHROPIC_API_KEY",):
+        if _key not in os.environ and _key in st.secrets:
+            os.environ[_key] = st.secrets[_key]
+except (FileNotFoundError, KeyError):
+    # st.secrets raises if secrets.toml is missing; fine for local dev.
+    pass
 
 # ---------------------------------------------------------------------------
 # Page configuration (must be the first Streamlit command)

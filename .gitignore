@@ -4,7 +4,9 @@ __pycache__/
 .env
 .env.*
 !.env.example
-data/synthetic/**
+.streamlit/secrets.toml
+# Synthetic data is committed so Streamlit Cloud can run without a
+# data-generation step. Keep files under GitHub's 100MB hard limit.
 data/eval/**
 !data/eval/eval_scorecard.md
 !data/eval/eval_summary.json

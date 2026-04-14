@@ -1,0 +1,478 @@
+{
+  "offer_impression_count": {
+    "id": "offer_impression_count",
+    "name": "Offer Impression Count",
+    "definition": "Total number of times an offer creative was rendered in a user-visible surface (store listing, notification, in-app banner). Deduplicated per user per session; a user seeing the same offer twice in one session counts as one impression.\n",
+    "unit": "count",
+    "source_tables": [
+      "offer_impressions",
+      "offer_events"
+    ],
+    "typical_range": {
+      "min": 100000,
+      "max": 5000000
+    },
+    "caveats": "Impressions from preloaded but never-viewed surfaces (e.g., below-fold cards) are excluded. Client-side dedup may undercount on slow networks.\n"
+  },
+  "offer_ctr": {
+    "id": "offer_ctr",
+    "name": "Offer Click-Through Rate",
+    "definition": "Ratio of unique offer clicks to unique offer impressions within the same attribution window (default 24h).\n",
+    "unit": "rate",
+    "derived_from": [
+      "offer_impression_count"
+    ],
+    "business_logic": "CTR = offer_clicks / offer_impression_count. Only primary CTA taps count; dismiss or swipe-away actions are excluded.\n",
+    "source_tables": [
+      "offer_clicks",
+      "offer_impressions"
+    ],
+    "alert_threshold": {
+      "below": 0.01
+    },
+    "typical_range": {
+      "min": 0.008,
+      "max": 0.08
+    }
+  },
+  "offer_redemption_rate": {
+    "id": "offer_redemption_rate",
+    "name": "Offer Redemption Rate",
+    "definition": "Fraction of users who clicked an offer and subsequently completed the required action (purchase, install, subscription) within the attribution window.\n",
+    "unit": "rate",
+    "derived_from": [
+      "offer_ctr",
+      "offer_redemption_count"
+    ],
+    "business_logic": "Redemption Rate = offer_redemption_count / offer_clicks. Multi-step offers (e.g., \"install and make a purchase\") require all steps completed.\n",
+    "source_tables": [
+      "offer_redemptions",
+      "offer_clicks"
+    ],
+    "alert_threshold": {
+      "below": 0.03
+    },
+    "typical_range": {
+      "min": 0.02,
+      "max": 0.35
+    }
+  },
+  "offer_redemption_count": {
+    "id": "offer_redemption_count",
+    "name": "Offer Redemption Count",
+    "definition": "Absolute number of completed offer redemptions in the period. Each user-offer pair counts at most once per offer campaign.\n",
+    "unit": "count",
+    "source_tables": [
+      "offer_redemptions"
+    ],
+    "typical_range": {
+      "min": 1000,
+      "max": 500000
+    }
+  },
+  "offer_driven_revenue": {
+    "id": "offer_driven_revenue",
+    "name": "Offer-Driven Revenue",
+    "definition": "Total gross revenue (before Play Store commission) directly attributed to redeemed offers, measured within 7 days of redemption.\n",
+    "unit": "usd",
+    "derived_from": [
+      "offer_redemption_count"
+    ],
+    "business_logic": "Sum of transaction amounts where the purchase event has a valid offer_redemption_id foreign key and occurred within the 7-day post-redemption attribution window.\n",
+    "source_tables": [
+      "transactions",
+      "offer_redemptions"
+    ],
+    "impacts": [
+      "offer_roi",
+      "revenue_per_user"
+    ],
+    "alert_threshold": {
+      "below": 500000
+    },
+    "typical_range": {
+      "min": 50000,
+      "max": 10000000
+    }
+  },
+  "offer_cost": {
+    "id": "offer_cost",
+    "name": "Offer Cost",
+    "definition": "Total cost of offer incentives disbursed (discounts granted, Play Points awarded, cashback paid) for redeemed offers in the period.\n",
+    "unit": "usd",
+    "source_tables": [
+      "offer_costs",
+      "offer_redemptions"
+    ],
+    "impacts": [
+      "offer_roi"
+    ],
+    "typical_range": {
+      "min": 10000,
+      "max": 2000000
+    }
+  },
+  "offer_roi": {
+    "id": "offer_roi",
+    "name": "Offer ROI",
+    "definition": "Return on investment for offer spend, computed as incremental revenue divided by offer cost.\n",
+    "unit": "ratio",
+    "derived_from": [
+      "offer_driven_revenue",
+      "offer_cost"
+    ],
+    "business_logic": "ROI = (offer_driven_revenue - offer_cost) / offer_cost. Values above 1.0 indicate profitable offers. Incremental revenue is estimated via a holdout-based lift model when available; otherwise gross attribution is used with a documented caveat.\n",
+    "alert_threshold": {
+      "below": 1.0
+    },
+    "typical_range": {
+      "min": 0.5,
+      "max": 12.0
+    },
+    "caveats": "ROI without holdout correction overstates true lift by 15-40% depending on offer type and audience overlap.\n"
+  },
+  "avg_time_to_redemption": {
+    "id": "avg_time_to_redemption",
+    "name": "Average Time to Redemption",
+    "definition": "Mean elapsed time (in hours) between a user's first impression of an offer and the completed redemption event.\n",
+    "unit": "hours",
+    "derived_from": [
+      "offer_impression_count",
+      "offer_redemption_count"
+    ],
+    "source_tables": [
+      "offer_impressions",
+      "offer_redemptions"
+    ],
+    "typical_range": {
+      "min": 2.0,
+      "max": 72.0
+    },
+    "caveats": "Outliers beyond 168h (7 days) are capped at 168h to prevent skew. Median is often a better summary statistic for this metric.\n"
+  },
+  "wau": {
+    "id": "wau",
+    "name": "Weekly Active Users",
+    "definition": "Count of unique users who opened any Play Store surface (main app, in-app billing, Play Games) at least once in a rolling 7-day window.\n",
+    "unit": "count",
+    "source_tables": [
+      "user_activity"
+    ],
+    "typical_range": {
+      "min": 500000,
+      "max": 50000000
+    }
+  },
+  "dau": {
+    "id": "dau",
+    "name": "Daily Active Users",
+    "definition": "Count of unique users who opened any Play Store surface at least once on a given calendar day (market-local timezone).\n",
+    "unit": "count",
+    "source_tables": [
+      "user_activity"
+    ],
+    "impacts": [
+      "wau",
+      "sessions_per_user"
+    ],
+    "typical_range": {
+      "min": 200000,
+      "max": 20000000
+    }
+  },
+  "d7_retention": {
+    "id": "d7_retention",
+    "name": "Day-7 Retention",
+    "definition": "Fraction of users who installed an app on day 0 and returned to use it on day 7 (calendar-day based, market-local timezone).\n",
+    "unit": "rate",
+    "source_tables": [
+      "user_retention",
+      "installs"
+    ],
+    "impacts": [
+      "d30_retention",
+      "ltv_30d"
+    ],
+    "alert_threshold": {
+      "below": 0.1
+    },
+    "typical_range": {
+      "min": 0.05,
+      "max": 0.55
+    }
+  },
+  "d30_retention": {
+    "id": "d30_retention",
+    "name": "Day-30 Retention",
+    "definition": "Fraction of users who installed an app on day 0 and returned to use it on day 30 (calendar-day based, market-local timezone).\n",
+    "unit": "rate",
+    "derived_from": [
+      "d7_retention"
+    ],
+    "source_tables": [
+      "user_retention",
+      "installs"
+    ],
+    "impacts": [
+      "ltv_30d"
+    ],
+    "alert_threshold": {
+      "below": 0.03
+    },
+    "typical_range": {
+      "min": 0.02,
+      "max": 0.25
+    }
+  },
+  "revenue_per_user": {
+    "id": "revenue_per_user",
+    "name": "Revenue Per User (ARPU)",
+    "definition": "Average gross revenue per active user in the period, computed as total revenue divided by the count of unique active users.\n",
+    "unit": "usd",
+    "source_tables": [
+      "transactions",
+      "user_activity"
+    ],
+    "impacts": [
+      "ltv_30d",
+      "offer_driven_revenue"
+    ],
+    "typical_range": {
+      "min": 0.1,
+      "max": 15.0
+    }
+  },
+  "ltv_30d": {
+    "id": "ltv_30d",
+    "name": "30-Day Lifetime Value",
+    "definition": "Predicted cumulative revenue from a user cohort over 30 days from install, using a survival-model-based projection calibrated on historical cohorts.\n",
+    "unit": "usd",
+    "derived_from": [
+      "revenue_per_user",
+      "d30_retention"
+    ],
+    "source_tables": [
+      "ltv_predictions",
+      "transactions"
+    ],
+    "typical_range": {
+      "min": 0.2,
+      "max": 50.0
+    },
+    "caveats": "LTV projections for cohorts younger than 14 days have wide confidence intervals. Use d7-based estimates with explicit uncertainty bands.\n"
+  },
+  "sessions_per_user": {
+    "id": "sessions_per_user",
+    "name": "Sessions Per User",
+    "definition": "Average number of app sessions per active user per day. A session starts on app foreground and ends after 30 minutes of inactivity or app background.\n",
+    "unit": "count",
+    "source_tables": [
+      "session_events"
+    ],
+    "impacts": [
+      "offer_impression_count"
+    ],
+    "typical_range": {
+      "min": 1.0,
+      "max": 8.0
+    }
+  },
+  "avg_session_duration": {
+    "id": "avg_session_duration",
+    "name": "Average Session Duration",
+    "definition": "Mean session length in minutes across all active users in the period.\n",
+    "unit": "minutes",
+    "source_tables": [
+      "session_events"
+    ],
+    "typical_range": {
+      "min": 2.0,
+      "max": 30.0
+    }
+  },
+  "play_points_earn_rate": {
+    "id": "play_points_earn_rate",
+    "name": "Play Points Earn Rate",
+    "definition": "Average Play Points earned per active Play Points member per week, across all earning channels (purchases, quests, check-in bonuses).\n",
+    "unit": "points",
+    "source_tables": [
+      "play_points_transactions"
+    ],
+    "impacts": [
+      "play_points_balance_avg",
+      "loyalty_driven_purchases"
+    ],
+    "typical_range": {
+      "min": 10,
+      "max": 500
+    }
+  },
+  "play_points_burn_rate": {
+    "id": "play_points_burn_rate",
+    "name": "Play Points Burn Rate",
+    "definition": "Average Play Points redeemed (burned) per active Play Points member per week. Includes coupon redemptions, in-app item exchanges, and Play Store credit conversions.\n",
+    "unit": "points",
+    "source_tables": [
+      "play_points_transactions"
+    ],
+    "impacts": [
+      "play_points_balance_avg",
+      "loyalty_driven_purchases"
+    ],
+    "typical_range": {
+      "min": 5,
+      "max": 400
+    },
+    "caveats": "Burn rate spikes during promotional events (e.g., 2x redemption weeks) can distort weekly averages. Use median or exclude promo periods for trend analysis.\n"
+  },
+  "play_points_balance_avg": {
+    "id": "play_points_balance_avg",
+    "name": "Play Points Average Balance",
+    "definition": "Mean outstanding Play Points balance across all enrolled members at period end.\n",
+    "unit": "points",
+    "derived_from": [
+      "play_points_earn_rate",
+      "play_points_burn_rate"
+    ],
+    "source_tables": [
+      "play_points_balances"
+    ],
+    "typical_range": {
+      "min": 100,
+      "max": 10000
+    },
+    "caveats": "High average balances may indicate poor burn incentives or UX friction in the redemption flow. Monitor in conjunction with burn rate.\n"
+  },
+  "loyalty_driven_purchases": {
+    "id": "loyalty_driven_purchases",
+    "name": "Loyalty-Driven Purchases",
+    "definition": "Count of purchase transactions where the user applied Play Points credit or redeemed a Play Points coupon as part of the payment.\n",
+    "unit": "count",
+    "derived_from": [
+      "play_points_burn_rate"
+    ],
+    "source_tables": [
+      "transactions",
+      "play_points_transactions"
+    ],
+    "impacts": [
+      "offer_driven_revenue",
+      "revenue_per_user"
+    ],
+    "typical_range": {
+      "min": 5000,
+      "max": 1000000
+    }
+  },
+  "store_visit_to_install_rate": {
+    "id": "store_visit_to_install_rate",
+    "name": "Store Visit to Install Rate",
+    "definition": "Conversion rate from unique store listing page views to completed installs within a 24-hour window.\n",
+    "unit": "rate",
+    "source_tables": [
+      "store_visits",
+      "installs"
+    ],
+    "impacts": [
+      "install_to_first_purchase_rate"
+    ],
+    "alert_threshold": {
+      "below": 0.1
+    },
+    "typical_range": {
+      "min": 0.08,
+      "max": 0.55
+    }
+  },
+  "install_to_first_purchase_rate": {
+    "id": "install_to_first_purchase_rate",
+    "name": "Install to First Purchase Rate",
+    "definition": "Fraction of users who made at least one in-app purchase or subscription within 30 days of install.\n",
+    "unit": "rate",
+    "derived_from": [
+      "store_visit_to_install_rate"
+    ],
+    "source_tables": [
+      "installs",
+      "transactions"
+    ],
+    "impacts": [
+      "revenue_per_user",
+      "ltv_30d"
+    ],
+    "alert_threshold": {
+      "below": 0.008
+    },
+    "typical_range": {
+      "min": 0.005,
+      "max": 0.12
+    }
+  },
+  "offer_funnel_conversion": {
+    "id": "offer_funnel_conversion",
+    "name": "Offer Funnel Conversion",
+    "definition": "End-to-end conversion rate from offer impression to completed redemption, combining CTR and redemption rate into a single metric.\n",
+    "unit": "rate",
+    "derived_from": [
+      "offer_ctr",
+      "offer_redemption_rate"
+    ],
+    "business_logic": "offer_funnel_conversion = offer_ctr * offer_redemption_rate. This is a composite metric for executive dashboards; drill into CTR and redemption rate separately for diagnostics.\n",
+    "source_tables": [
+      "offer_impressions",
+      "offer_clicks",
+      "offer_redemptions"
+    ],
+    "alert_threshold": {
+      "below": 0.001
+    },
+    "typical_range": {
+      "min": 0.0005,
+      "max": 0.015
+    }
+  },
+  "subscription_conversion_rate": {
+    "id": "subscription_conversion_rate",
+    "name": "Subscription Conversion Rate",
+    "definition": "Fraction of active free users who convert to a paid subscription (new subscriptions / active free users) within the reporting period.\n",
+    "unit": "rate",
+    "source_tables": [
+      "subscriptions",
+      "user_activity"
+    ],
+    "impacts": [
+      "revenue_per_user",
+      "ltv_30d"
+    ],
+    "alert_threshold": {
+      "below": 0.015
+    },
+    "typical_range": {
+      "min": 0.01,
+      "max": 0.12
+    }
+  },
+  "churn_rate": {
+    "id": "churn_rate",
+    "name": "Churn Rate",
+    "definition": "Fraction of users active in the prior period who did not return in the current period (monthly basis). Includes both voluntary churn (uninstall) and passive churn (inactivity > 30 days).\n",
+    "unit": "rate",
+    "source_tables": [
+      "user_activity",
+      "uninstall_events"
+    ],
+    "impacts": [
+      "dau",
+      "wau",
+      "ltv_30d"
+    ],
+    "alert_threshold": {
+      "above": 0.25
+    },
+    "typical_range": {
+      "min": 0.03,
+      "max": 0.3
+    },
+    "caveats": "Churn definition varies by vertical. Games typically use 7-day inactivity windows; subscription apps use billing cancellation. This metric uses the 30-day inactivity standard for cross-category comparability.\n"
+  }
+}
