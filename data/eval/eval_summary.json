@@ -1,0 +1,174 @@
+{
+  "timestamp": "2026-04-11T23:13:42.076903",
+  "total_cases": 32,
+  "overall_weighted_score": 0.629,
+  "per_dimension": {
+    "attribution_accuracy": {
+      "label": "Attribution Accuracy",
+      "weight": 0.3,
+      "threshold": 0.7,
+      "mean": 0.9958,
+      "median": 0.9956,
+      "min": 0.9943,
+      "max": 0.9985,
+      "pass_rate": 1.0
+    },
+    "cause_identification": {
+      "label": "Cause Identification",
+      "weight": 0.25,
+      "threshold": 0.8,
+      "mean": 0.2708,
+      "median": 0.3667,
+      "min": 0.0,
+      "max": 0.8,
+      "pass_rate": 0.0312
+    },
+    "false_attribution": {
+      "label": "False Attribution",
+      "weight": 0.15,
+      "threshold": 0.9,
+      "mean": 0.4219,
+      "median": 0.3333,
+      "min": 0.0,
+      "max": 1.0,
+      "pass_rate": 0.1875
+    },
+    "data_artifact_detection": {
+      "label": "Data Artifact Detection",
+      "weight": 0.1,
+      "threshold": 0.8,
+      "mean": 1.0,
+      "median": 1.0,
+      "min": 1.0,
+      "max": 1.0,
+      "pass_rate": 1.0
+    },
+    "narrative_quality": {
+      "label": "Narrative Quality",
+      "weight": 0.1,
+      "threshold": 0.7,
+      "mean": 0.4575,
+      "median": 0.4,
+      "min": 0.32,
+      "max": 0.88,
+      "pass_rate": 0.0312
+    },
+    "factual_grounding": {
+      "label": "Factual Grounding",
+      "weight": 0.1,
+      "threshold": 0.95,
+      "mean": 0.5356,
+      "median": 0.623,
+      "min": 0.0,
+      "max": 0.86,
+      "pass_rate": 0.0
+    }
+  },
+  "per_difficulty": {
+    "EASY": {
+      "count": 0,
+      "mean_weighted": null,
+      "per_dimension": {}
+    },
+    "MEDIUM": {
+      "count": 20,
+      "mean_weighted": 0.5796,
+      "per_dimension": {
+        "attribution_accuracy": 0.9956,
+        "cause_identification": 0.17,
+        "false_attribution": 0.25,
+        "data_artifact_detection": 1.0,
+        "narrative_quality": 0.45,
+        "factual_grounding": 0.5593
+      }
+    },
+    "HARD": {
+      "count": 12,
+      "mean_weighted": 0.7114,
+      "per_dimension": {
+        "attribution_accuracy": 0.9961,
+        "cause_identification": 0.4389,
+        "false_attribution": 0.7083,
+        "data_artifact_detection": 1.0,
+        "narrative_quality": 0.47,
+        "factual_grounding": 0.496
+      }
+    }
+  },
+  "worst_cases": [
+    {
+      "movement_id": "MOV_CF286F0309",
+      "difficulty": "MEDIUM",
+      "metric_name": "dau",
+      "market_id": "PH",
+      "weighted_total": 0.4795,
+      "failing_dimensions": [
+        "cause_identification",
+        "false_attribution",
+        "narrative_quality",
+        "factual_grounding"
+      ]
+    },
+    {
+      "movement_id": "MOV_A449E0339B",
+      "difficulty": "MEDIUM",
+      "metric_name": "offer_redemption_count",
+      "market_id": "VN",
+      "weighted_total": 0.4835,
+      "failing_dimensions": [
+        "cause_identification",
+        "false_attribution",
+        "narrative_quality",
+        "factual_grounding"
+      ]
+    },
+    {
+      "movement_id": "MOV_E8FEB942C7",
+      "difficulty": "MEDIUM",
+      "metric_name": "offer_driven_revenue",
+      "market_id": "IN",
+      "weighted_total": 0.4875,
+      "failing_dimensions": [
+        "cause_identification",
+        "false_attribution",
+        "narrative_quality",
+        "factual_grounding"
+      ]
+    },
+    {
+      "movement_id": "MOV_98DADE9915",
+      "difficulty": "MEDIUM",
+      "metric_name": "revenue_per_user",
+      "market_id": "US",
+      "weighted_total": 0.4885,
+      "failing_dimensions": [
+        "cause_identification",
+        "false_attribution",
+        "narrative_quality",
+        "factual_grounding"
+      ]
+    },
+    {
+      "movement_id": "MOV_B298D9C374",
+      "difficulty": "MEDIUM",
+      "metric_name": "offer_ctr",
+      "market_id": "MX",
+      "weighted_total": 0.4928,
+      "failing_dimensions": [
+        "cause_identification",
+        "false_attribution",
+        "narrative_quality",
+        "factual_grounding"
+      ]
+    }
+  ],
+  "recommendations": [
+    "Cause Identification is 0.53 below threshold (0.27 vs 0.80). Pass rate is only 3%.",
+    "False Attribution is 0.48 below threshold (0.42 vs 0.90). Pass rate is only 19%.",
+    "Narrative Quality is 0.24 below threshold (0.46 vs 0.70). Pass rate is only 3%.",
+    "Factual Grounding is 0.41 below threshold (0.54 vs 0.95). Pass rate is only 0%.",
+    "Agent is hallucinating causes. Add explicit instruction to only attribute causes supported by data evidence.",
+    "Factual grounding is below threshold. Tighten the grounding checker to require explicit source references for every claim.",
+    "Narrative quality is low. Review the narrative generator prompt for clarity and actionability improvements."
+  ]
+}

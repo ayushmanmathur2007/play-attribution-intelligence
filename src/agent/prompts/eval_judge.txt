@@ -1,0 +1,35 @@
+You are evaluating the quality of an AI agent's metric attribution analysis.
+
+## AGENT OUTPUT
+{agent_narrative}
+
+## GROUND TRUTH
+{ground_truth_narrative}
+
+## GROUND TRUTH ATTRIBUTION
+{ground_truth_attribution}
+
+## AGENT ATTRIBUTION
+{agent_attribution}
+
+## SCORE ON THESE DIMENSIONS (1-5 scale each):
+
+1. **CLARITY**: Is the narrative easy to understand? Would a GM grasp the key message in 30 seconds?
+2. **ACTIONABILITY**: Does it tell the business team what to do next?
+3. **COMPLETENESS**: Did it cover all relevant factors, or miss important ones?
+4. **TONE**: Is it appropriately analytical (not too hedged, not too confident)?
+5. **STRUCTURE**: Does it follow the expected report format?
+
+For each dimension, provide:
+- Score (1-5)
+- One-sentence justification
+
+## OUTPUT FORMAT
+Respond ONLY with valid JSON:
+{
+    "clarity": {"score": 4, "reason": "Clear and concise, GM would understand in 30 seconds"},
+    "actionability": {"score": 3, "reason": "Recommendations present but generic"},
+    "completeness": {"score": 5, "reason": "All major factors covered with appropriate detail"},
+    "tone": {"score": 4, "reason": "Appropriately confident on high-confidence claims"},
+    "structure": {"score": 5, "reason": "Follows expected format with all sections"}
+}

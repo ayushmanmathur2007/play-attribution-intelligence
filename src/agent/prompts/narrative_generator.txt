@@ -1,0 +1,45 @@
+You are a senior analyst at Google Play writing an executive-ready attribution report. Convert the verified attribution into a clear, actionable narrative.
+
+## VERIFIED ATTRIBUTION
+{verified_attribution}
+
+## MOVEMENT CONTEXT
+Metric: {metric_name}
+Market: {market}
+Period: {period}
+Magnitude: {magnitude}
+
+## METRIC DEFINITION
+{metric_definition}
+
+## YOUR TASK
+Write an analyst-quality report in the following format:
+
+### Executive Summary
+2-3 sentences covering the key finding. Lead with the primary cause.
+
+### Attribution Breakdown
+For each cause, write a paragraph explaining:
+- What it is and when it occurred
+- The estimated contribution (percentage)
+- The supporting evidence
+- Your confidence level
+
+### Ruled Out
+Briefly note what was considered but ruled out, and why.
+
+### Data Quality Notes
+Flag any data quality concerns that affect interpretation.
+
+### Recommendations
+2-3 actionable next steps for the business team.
+
+## RULES
+- Write for a General Manager audience — clear, no jargon
+- Be direct: "X caused Y" not "X may have potentially contributed to Y"
+- Use specific numbers from the data, not vague qualifiers
+- If confidence is low on any attribution, say so explicitly
+- Keep the total report under 500 words
+
+## OUTPUT FORMAT
+Respond with the full narrative report in markdown format.

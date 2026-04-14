@@ -1,0 +1,27 @@
+llm:
+  provider: vertex_gemini
+  model: gemini-1.5-pro
+  eval_model: gemini-1.5-flash
+  project_id: your-gcp-project
+  location: us-central1
+  max_tokens: 4096
+  temperature: 0.2
+
+data:
+  provider: bigquery
+  project_id: your-gcp-project
+  dataset: play_attribution
+
+eval:
+  golden_dataset: gs://your-bucket/play-attribution/golden/metric_movements_golden.csv
+  output_dir: gs://your-bucket/play-attribution/eval/
+  trace_dir: gs://your-bucket/play-attribution/eval/traces/
+
+observability:
+  trace_backend: cloud_trace
+  log_level: INFO
+
+ui:
+  theme: dark
+  title: "Play Attribution Intelligence"
+  port: 8080

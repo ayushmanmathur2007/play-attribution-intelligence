@@ -1,0 +1,24 @@
+llm:
+  provider: anthropic
+  model: claude-sonnet-4-20250514
+  eval_model: claude-haiku-4-5-20251001
+  max_tokens: 4096
+  temperature: 0.2
+
+data:
+  provider: duckdb
+  data_dir: data/synthetic
+
+eval:
+  golden_dataset: data/synthetic/metric_movements_golden.csv
+  output_dir: data/eval
+  trace_dir: data/eval/traces
+
+observability:
+  trace_output: traces/
+  log_level: INFO
+
+ui:
+  theme: dark
+  title: "Play Attribution Intelligence"
+  port: 8501

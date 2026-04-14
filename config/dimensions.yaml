@@ -1,0 +1,809 @@
+# =============================================================================
+# Google Play Loyalty & Offers Attribution System
+# Dimensions Configuration
+# =============================================================================
+# Defines all markets, categories, segments, and metrics used across the
+# simulation engine, analytics pipeline, and dashboard layers.
+# =============================================================================
+
+version: "1.0"
+last_updated: "2026-04-10"
+
+# =============================================================================
+# MARKETS (15)
+# =============================================================================
+# Three tiers based on Play Store revenue contribution and strategic priority.
+# Tier 1: mature, high-ARPU markets
+# Tier 2: high-growth emerging markets
+# Tier 3: frontier / long-tail markets
+# =============================================================================
+
+markets:
+  # --- Tier 1 ---
+  - id: US
+    name: United States
+    region: NAM
+    tier: 1
+    timezone: America/New_York
+
+  - id: GB
+    name: United Kingdom
+    region: EUR
+    tier: 1
+    timezone: Europe/London
+
+  - id: DE
+    name: Germany
+    region: EUR
+    tier: 1
+    timezone: Europe/Berlin
+
+  - id: JP
+    name: Japan
+    region: APAC
+    tier: 1
+    timezone: Asia/Tokyo
+
+  - id: KR
+    name: South Korea
+    region: APAC
+    tier: 1
+    timezone: Asia/Seoul
+
+  # --- Tier 2 ---
+  - id: BR
+    name: Brazil
+    region: LATAM
+    tier: 2
+    timezone: America/Sao_Paulo
+
+  - id: IN
+    name: India
+    region: APAC
+    tier: 2
+    timezone: Asia/Kolkata
+
+  - id: MX
+    name: Mexico
+    region: LATAM
+    tier: 2
+    timezone: America/Mexico_City
+
+  - id: ID
+    name: Indonesia
+    region: APAC
+    tier: 2
+    timezone: Asia/Jakarta
+
+  - id: TR
+    name: Turkey
+    region: EMEA
+    tier: 2
+    timezone: Europe/Istanbul
+
+  # --- Tier 3 ---
+  - id: RU
+    name: Russia
+    region: EUR
+    tier: 3
+    timezone: Europe/Moscow
+
+  - id: NG
+    name: Nigeria
+    region: AFR
+    tier: 3
+    timezone: Africa/Lagos
+
+  - id: PH
+    name: Philippines
+    region: APAC
+    tier: 3
+    timezone: Asia/Manila
+
+  - id: EG
+    name: Egypt
+    region: EMEA
+    tier: 3
+    timezone: Africa/Cairo
+
+  - id: VN
+    name: Vietnam
+    region: APAC
+    tier: 3
+    timezone: Asia/Ho_Chi_Minh
+
+# =============================================================================
+# CATEGORIES (12)
+# =============================================================================
+# Four game verticals and eight app verticals covering the primary Play Store
+# taxonomy used for offer targeting and performance benchmarking.
+# =============================================================================
+
+categories:
+  # --- Games ---
+  - id: GAM_CAS
+    name: Casual Games
+    vertical: Games
+
+  - id: GAM_MID
+    name: Midcore Games
+    vertical: Games
+
+  - id: GAM_HC
+    name: Hardcore Games
+    vertical: Games
+
+  - id: GAM_HYP
+    name: Hypercasual Games
+    vertical: Games
+
+  # --- Apps ---
+  - id: APP_SOC
+    name: Social & Communication
+    vertical: Apps
+
+  - id: APP_ENT
+    name: Entertainment & Streaming
+    vertical: Apps
+
+  - id: APP_PRD
+    name: Productivity & Tools
+    vertical: Apps
+
+  - id: APP_FIN
+    name: Finance & Fintech
+    vertical: Apps
+
+  - id: APP_SHP
+    name: Shopping & Commerce
+    vertical: Apps
+
+  - id: APP_EDU
+    name: Education
+    vertical: Apps
+
+  - id: APP_HLT
+    name: Health & Fitness
+    vertical: Apps
+
+  - id: APP_TRV
+    name: Travel & Navigation
+    vertical: Apps
+
+# =============================================================================
+# SEGMENTS (10)
+# =============================================================================
+# User lifecycle segments with base population share (base_size_pct).
+# These percentages represent the typical distribution of a market's
+# monthly active user base across segments.
+# =============================================================================
+
+segments:
+  # --- New Users ---
+  - id: NEW_0_7
+    name: New Users 0-7d
+    base_size_pct: 0.05
+
+  - id: NEW_8_30
+    name: New Users 8-30d
+    base_size_pct: 0.08
+
+  # --- Active Users ---
+  - id: ACT_HIGH
+    name: High-Value Active
+    base_size_pct: 0.10
+
+  - id: ACT_MED
+    name: Medium-Value Active
+    base_size_pct: 0.25
+
+  - id: ACT_LOW
+    name: Low-Value Active
+    base_size_pct: 0.15
+
+  - id: ACT_FREE
+    name: Active Free Users
+    base_size_pct: 0.12
+
+  # --- Lapsed / Churned ---
+  - id: LAP_30_90
+    name: Lapsed 30-90d
+    base_size_pct: 0.10
+
+  - id: LAP_90
+    name: Churned 90+d
+    base_size_pct: 0.08
+
+  # --- Play Points ---
+  - id: PP_ACTIVE
+    name: Play Points Active
+    base_size_pct: 0.05
+
+  - id: PP_DORMANT
+    name: Play Points Dormant
+    base_size_pct: 0.02
+
+# =============================================================================
+# METRICS (25 KPIs)
+# =============================================================================
+# Organized into five groups: Offer Performance, User Behavior,
+# Loyalty Program, Funnel, and Business Health.
+#
+# base_values are per-tier defaults used by the simulation engine.
+# Units: count, rate, usd, ratio, hours, minutes, points
+# =============================================================================
+
+metrics:
+
+  # ---------------------------------------------------------------------------
+  # Offer Performance (8)
+  # ---------------------------------------------------------------------------
+
+  - id: offer_impression_count
+    name: Offer Impression Count
+    definition: >
+      Total number of times an offer creative was rendered in a user-visible
+      surface (store listing, notification, in-app banner). Deduplicated per
+      user per session; a user seeing the same offer twice in one session
+      counts as one impression.
+    unit: count
+    base_values:
+      tier_1: 1500000
+      tier_2: 800000
+      tier_3: 300000
+    source_tables:
+      - offer_impressions
+      - offer_events
+    typical_range:
+      min: 100000
+      max: 5000000
+    caveats: >
+      Impressions from preloaded but never-viewed surfaces (e.g., below-fold
+      cards) are excluded. Client-side dedup may undercount on slow networks.
+
+  - id: offer_ctr
+    name: Offer Click-Through Rate
+    definition: >
+      Ratio of unique offer clicks to unique offer impressions within the
+      same attribution window (default 24h).
+    unit: rate
+    base_values:
+      tier_1: 0.032
+      tier_2: 0.028
+      tier_3: 0.021
+    derived_from:
+      - offer_impression_count
+    business_logic: >
+      CTR = offer_clicks / offer_impression_count. Only primary CTA taps
+      count; dismiss or swipe-away actions are excluded.
+    source_tables:
+      - offer_clicks
+      - offer_impressions
+    alert_threshold:
+      below: 0.01
+    typical_range:
+      min: 0.008
+      max: 0.08
+
+  - id: offer_redemption_rate
+    name: Offer Redemption Rate
+    definition: >
+      Fraction of users who clicked an offer and subsequently completed the
+      required action (purchase, install, subscription) within the attribution
+      window.
+    unit: rate
+    base_values:
+      tier_1: 0.18
+      tier_2: 0.12
+      tier_3: 0.07
+    derived_from:
+      - offer_ctr
+      - offer_redemption_count
+    business_logic: >
+      Redemption Rate = offer_redemption_count / offer_clicks. Multi-step
+      offers (e.g., "install and make a purchase") require all steps completed.
+    source_tables:
+      - offer_redemptions
+      - offer_clicks
+    alert_threshold:
+      below: 0.03
+    typical_range:
+      min: 0.02
+      max: 0.35
+
+  - id: offer_redemption_count
+    name: Offer Redemption Count
+    definition: >
+      Absolute number of completed offer redemptions in the period. Each
+      user-offer pair counts at most once per offer campaign.
+    unit: count
+    base_values:
+      tier_1: 85000
+      tier_2: 35000
+      tier_3: 8000
+    source_tables:
+      - offer_redemptions
+    typical_range:
+      min: 1000
+      max: 500000
+
+  - id: offer_driven_revenue
+    name: Offer-Driven Revenue
+    definition: >
+      Total gross revenue (before Play Store commission) directly attributed
+      to redeemed offers, measured within 7 days of redemption.
+    unit: usd
+    base_values:
+      tier_1: 2400000
+      tier_2: 650000
+      tier_3: 120000
+    derived_from:
+      - offer_redemption_count
+    business_logic: >
+      Sum of transaction amounts where the purchase event has a valid
+      offer_redemption_id foreign key and occurred within the 7-day
+      post-redemption attribution window.
+    source_tables:
+      - transactions
+      - offer_redemptions
+    impacts:
+      - offer_roi
+      - revenue_per_user
+    alert_threshold:
+      below: 500000
+    typical_range:
+      min: 50000
+      max: 10000000
+
+  - id: offer_cost
+    name: Offer Cost
+    definition: >
+      Total cost of offer incentives disbursed (discounts granted, Play
+      Points awarded, cashback paid) for redeemed offers in the period.
+    unit: usd
+    base_values:
+      tier_1: 480000
+      tier_2: 180000
+      tier_3: 45000
+    source_tables:
+      - offer_costs
+      - offer_redemptions
+    impacts:
+      - offer_roi
+    typical_range:
+      min: 10000
+      max: 2000000
+
+  - id: offer_roi
+    name: Offer ROI
+    definition: >
+      Return on investment for offer spend, computed as incremental revenue
+      divided by offer cost.
+    unit: ratio
+    base_values:
+      tier_1: 5.0
+      tier_2: 3.6
+      tier_3: 2.7
+    derived_from:
+      - offer_driven_revenue
+      - offer_cost
+    business_logic: >
+      ROI = (offer_driven_revenue - offer_cost) / offer_cost. Values above
+      1.0 indicate profitable offers. Incremental revenue is estimated via
+      a holdout-based lift model when available; otherwise gross attribution
+      is used with a documented caveat.
+    alert_threshold:
+      below: 1.0
+    typical_range:
+      min: 0.5
+      max: 12.0
+    caveats: >
+      ROI without holdout correction overstates true lift by 15-40% depending
+      on offer type and audience overlap.
+
+  - id: avg_time_to_redemption
+    name: Average Time to Redemption
+    definition: >
+      Mean elapsed time (in hours) between a user's first impression of an
+      offer and the completed redemption event.
+    unit: hours
+    base_values:
+      tier_1: 18.5
+      tier_2: 26.0
+      tier_3: 38.0
+    derived_from:
+      - offer_impression_count
+      - offer_redemption_count
+    source_tables:
+      - offer_impressions
+      - offer_redemptions
+    typical_range:
+      min: 2.0
+      max: 72.0
+    caveats: >
+      Outliers beyond 168h (7 days) are capped at 168h to prevent skew.
+      Median is often a better summary statistic for this metric.
+
+  # ---------------------------------------------------------------------------
+  # User Behavior (8)
+  # ---------------------------------------------------------------------------
+
+  - id: wau
+    name: Weekly Active Users
+    definition: >
+      Count of unique users who opened any Play Store surface (main app,
+      in-app billing, Play Games) at least once in a rolling 7-day window.
+    unit: count
+    base_values:
+      tier_1: 12000000
+      tier_2: 8500000
+      tier_3: 3000000
+    source_tables:
+      - user_activity
+    typical_range:
+      min: 500000
+      max: 50000000
+
+  - id: dau
+    name: Daily Active Users
+    definition: >
+      Count of unique users who opened any Play Store surface at least once
+      on a given calendar day (market-local timezone).
+    unit: count
+    base_values:
+      tier_1: 4500000
+      tier_2: 3200000
+      tier_3: 1100000
+    source_tables:
+      - user_activity
+    impacts:
+      - wau
+      - sessions_per_user
+    typical_range:
+      min: 200000
+      max: 20000000
+
+  - id: d7_retention
+    name: Day-7 Retention
+    definition: >
+      Fraction of users who installed an app on day 0 and returned to use
+      it on day 7 (calendar-day based, market-local timezone).
+    unit: rate
+    base_values:
+      tier_1: 0.28
+      tier_2: 0.22
+      tier_3: 0.15
+    source_tables:
+      - user_retention
+      - installs
+    impacts:
+      - d30_retention
+      - ltv_30d
+    alert_threshold:
+      below: 0.10
+    typical_range:
+      min: 0.05
+      max: 0.55
+
+  - id: d30_retention
+    name: Day-30 Retention
+    definition: >
+      Fraction of users who installed an app on day 0 and returned to use
+      it on day 30 (calendar-day based, market-local timezone).
+    unit: rate
+    base_values:
+      tier_1: 0.12
+      tier_2: 0.08
+      tier_3: 0.05
+    derived_from:
+      - d7_retention
+    source_tables:
+      - user_retention
+      - installs
+    impacts:
+      - ltv_30d
+    alert_threshold:
+      below: 0.03
+    typical_range:
+      min: 0.02
+      max: 0.25
+
+  - id: revenue_per_user
+    name: Revenue Per User (ARPU)
+    definition: >
+      Average gross revenue per active user in the period, computed as
+      total revenue divided by the count of unique active users.
+    unit: usd
+    base_values:
+      tier_1: 4.20
+      tier_2: 1.80
+      tier_3: 0.65
+    source_tables:
+      - transactions
+      - user_activity
+    impacts:
+      - ltv_30d
+      - offer_driven_revenue
+    typical_range:
+      min: 0.10
+      max: 15.00
+
+  - id: ltv_30d
+    name: 30-Day Lifetime Value
+    definition: >
+      Predicted cumulative revenue from a user cohort over 30 days from
+      install, using a survival-model-based projection calibrated on
+      historical cohorts.
+    unit: usd
+    base_values:
+      tier_1: 8.50
+      tier_2: 3.20
+      tier_3: 1.10
+    derived_from:
+      - revenue_per_user
+      - d30_retention
+    source_tables:
+      - ltv_predictions
+      - transactions
+    typical_range:
+      min: 0.20
+      max: 50.00
+    caveats: >
+      LTV projections for cohorts younger than 14 days have wide confidence
+      intervals. Use d7-based estimates with explicit uncertainty bands.
+
+  - id: sessions_per_user
+    name: Sessions Per User
+    definition: >
+      Average number of app sessions per active user per day. A session
+      starts on app foreground and ends after 30 minutes of inactivity or
+      app background.
+    unit: count
+    base_values:
+      tier_1: 3.2
+      tier_2: 2.8
+      tier_3: 2.1
+    source_tables:
+      - session_events
+    impacts:
+      - offer_impression_count
+    typical_range:
+      min: 1.0
+      max: 8.0
+
+  - id: avg_session_duration
+    name: Average Session Duration
+    definition: >
+      Mean session length in minutes across all active users in the period.
+    unit: minutes
+    base_values:
+      tier_1: 12.5
+      tier_2: 9.8
+      tier_3: 7.2
+    source_tables:
+      - session_events
+    typical_range:
+      min: 2.0
+      max: 30.0
+
+  # ---------------------------------------------------------------------------
+  # Loyalty Program (4)
+  # ---------------------------------------------------------------------------
+
+  - id: play_points_earn_rate
+    name: Play Points Earn Rate
+    definition: >
+      Average Play Points earned per active Play Points member per week,
+      across all earning channels (purchases, quests, check-in bonuses).
+    unit: points
+    base_values:
+      tier_1: 145
+      tier_2: 85
+      tier_3: 40
+    source_tables:
+      - play_points_transactions
+    impacts:
+      - play_points_balance_avg
+      - loyalty_driven_purchases
+    typical_range:
+      min: 10
+      max: 500
+
+  - id: play_points_burn_rate
+    name: Play Points Burn Rate
+    definition: >
+      Average Play Points redeemed (burned) per active Play Points member
+      per week. Includes coupon redemptions, in-app item exchanges, and
+      Play Store credit conversions.
+    unit: points
+    base_values:
+      tier_1: 120
+      tier_2: 60
+      tier_3: 25
+    source_tables:
+      - play_points_transactions
+    impacts:
+      - play_points_balance_avg
+      - loyalty_driven_purchases
+    typical_range:
+      min: 5
+      max: 400
+    caveats: >
+      Burn rate spikes during promotional events (e.g., 2x redemption weeks)
+      can distort weekly averages. Use median or exclude promo periods for
+      trend analysis.
+
+  - id: play_points_balance_avg
+    name: Play Points Average Balance
+    definition: >
+      Mean outstanding Play Points balance across all enrolled members at
+      period end.
+    unit: points
+    base_values:
+      tier_1: 2800
+      tier_2: 1500
+      tier_3: 600
+    derived_from:
+      - play_points_earn_rate
+      - play_points_burn_rate
+    source_tables:
+      - play_points_balances
+    typical_range:
+      min: 100
+      max: 10000
+    caveats: >
+      High average balances may indicate poor burn incentives or UX friction
+      in the redemption flow. Monitor in conjunction with burn rate.
+
+  - id: loyalty_driven_purchases
+    name: Loyalty-Driven Purchases
+    definition: >
+      Count of purchase transactions where the user applied Play Points
+      credit or redeemed a Play Points coupon as part of the payment.
+    unit: count
+    base_values:
+      tier_1: 320000
+      tier_2: 140000
+      tier_3: 35000
+    derived_from:
+      - play_points_burn_rate
+    source_tables:
+      - transactions
+      - play_points_transactions
+    impacts:
+      - offer_driven_revenue
+      - revenue_per_user
+    typical_range:
+      min: 5000
+      max: 1000000
+
+  # ---------------------------------------------------------------------------
+  # Funnel (3)
+  # ---------------------------------------------------------------------------
+
+  - id: store_visit_to_install_rate
+    name: Store Visit to Install Rate
+    definition: >
+      Conversion rate from unique store listing page views to completed
+      installs within a 24-hour window.
+    unit: rate
+    base_values:
+      tier_1: 0.32
+      tier_2: 0.28
+      tier_3: 0.22
+    source_tables:
+      - store_visits
+      - installs
+    impacts:
+      - install_to_first_purchase_rate
+    alert_threshold:
+      below: 0.10
+    typical_range:
+      min: 0.08
+      max: 0.55
+
+  - id: install_to_first_purchase_rate
+    name: Install to First Purchase Rate
+    definition: >
+      Fraction of users who made at least one in-app purchase or subscription
+      within 30 days of install.
+    unit: rate
+    base_values:
+      tier_1: 0.045
+      tier_2: 0.028
+      tier_3: 0.015
+    derived_from:
+      - store_visit_to_install_rate
+    source_tables:
+      - installs
+      - transactions
+    impacts:
+      - revenue_per_user
+      - ltv_30d
+    alert_threshold:
+      below: 0.008
+    typical_range:
+      min: 0.005
+      max: 0.12
+
+  - id: offer_funnel_conversion
+    name: Offer Funnel Conversion
+    definition: >
+      End-to-end conversion rate from offer impression to completed
+      redemption, combining CTR and redemption rate into a single metric.
+    unit: rate
+    base_values:
+      tier_1: 0.0058
+      tier_2: 0.0034
+      tier_3: 0.0015
+    derived_from:
+      - offer_ctr
+      - offer_redemption_rate
+    business_logic: >
+      offer_funnel_conversion = offer_ctr * offer_redemption_rate. This is
+      a composite metric for executive dashboards; drill into CTR and
+      redemption rate separately for diagnostics.
+    source_tables:
+      - offer_impressions
+      - offer_clicks
+      - offer_redemptions
+    alert_threshold:
+      below: 0.001
+    typical_range:
+      min: 0.0005
+      max: 0.015
+
+  # ---------------------------------------------------------------------------
+  # Business Health (2)
+  # ---------------------------------------------------------------------------
+
+  - id: subscription_conversion_rate
+    name: Subscription Conversion Rate
+    definition: >
+      Fraction of active free users who convert to a paid subscription
+      (new subscriptions / active free users) within the reporting period.
+    unit: rate
+    base_values:
+      tier_1: 0.065
+      tier_2: 0.042
+      tier_3: 0.025
+    source_tables:
+      - subscriptions
+      - user_activity
+    impacts:
+      - revenue_per_user
+      - ltv_30d
+    alert_threshold:
+      below: 0.015
+    typical_range:
+      min: 0.01
+      max: 0.12
+
+  - id: churn_rate
+    name: Churn Rate
+    definition: >
+      Fraction of users active in the prior period who did not return in
+      the current period (monthly basis). Includes both voluntary churn
+      (uninstall) and passive churn (inactivity > 30 days).
+    unit: rate
+    base_values:
+      tier_1: 0.08
+      tier_2: 0.12
+      tier_3: 0.18
+    source_tables:
+      - user_activity
+      - uninstall_events
+    impacts:
+      - dau
+      - wau
+      - ltv_30d
+    alert_threshold:
+      above: 0.25
+    typical_range:
+      min: 0.03
+      max: 0.30
+    caveats: >
+      Churn definition varies by vertical. Games typically use 7-day
+      inactivity windows; subscription apps use billing cancellation.
+      This metric uses the 30-day inactivity standard for cross-category
+      comparability.

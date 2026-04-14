@@ -1,0 +1,39 @@
+version: "3.9"
+
+services:
+  app:
+    build: .
+    ports:
+      - "8501:8501"
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - ./traces:/app/traces
+      - ./config:/app/config
+    env_file:
+      - .env
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: >
+      streamlit run src/ui/app.py
+      --server.port=8501
+      --server.address=0.0.0.0
+      --
+      --data-dir data/synthetic/
+      --eval-dir data/eval/
+
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - ./traces:/app/traces
+      - ./config:/app/config
+    env_file:
+      - .env
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: uvicorn src.api:app --host 0.0.0.0 --port 8000
+    profiles:
+      - api
