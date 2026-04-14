@@ -174,16 +174,26 @@ def metric_trend_chart(
 
         for idx, row in init_df.iterrows():
             name = row.get("initiative_name", row.get("name", f"Initiative {idx}"))
+            # Same Plotly quirk as change points: annotation_text path can't
+            # handle pd.Timestamp. Pass epoch ms and render annotation manually.
+            start_ts = pd.Timestamp(row["start_date"])
+            end_ts = pd.Timestamp(row["end_date"])
             fig.add_vrect(
-                x0=row["start_date"],
-                x1=row["end_date"],
+                x0=int(start_ts.value / 1_000_000),
+                x1=int(end_ts.value / 1_000_000),
                 fillcolor=_COLORS[(idx + 3) % len(_COLORS)],
                 opacity=0.12,
                 line_width=0,
-                annotation_text=name,
-                annotation_position="top left",
-                annotation_font_size=10,
-                annotation_font_color="#94a3b8",
+            )
+            fig.add_annotation(
+                x=start_ts.strftime("%Y-%m-%d"),
+                y=1.0,
+                yref="paper",
+                text=name,
+                showarrow=False,
+                font=dict(size=10, color="#94a3b8"),
+                xanchor="left",
+                yanchor="top",
             )
 
     # Change point markers as vertical dashed lines
@@ -196,14 +206,26 @@ def metric_trend_chart(
             cp_df = cp_df[cp_df["metric_name"] == metric]
 
         for _, row in cp_df.iterrows():
+            # Plotly's add_vline annotation path calls sum() over timestamps
+            # which fails on pd.Timestamp. Pass a millisecond epoch int and
+            # drop the annotation (render a separate add_annotation instead).
+            ts = pd.Timestamp(row["date"])
+            x_ms = int(ts.value / 1_000_000)  # nanoseconds -> milliseconds
             fig.add_vline(
-                x=row["date"],
+                x=x_ms,
                 line_dash="dash",
                 line_color="#f97316",
                 line_width=1.5,
-                annotation_text="CP",
-                annotation_font_size=10,
-                annotation_font_color="#f97316",
+            )
+            fig.add_annotation(
+                x=ts.strftime("%Y-%m-%d"),
+                y=1.0,
+                yref="paper",
+                text="CP",
+                showarrow=False,
+                font=dict(size=10, color="#f97316"),
+                xanchor="left",
+                yanchor="top",
             )
 
     readable = metric.replace("_", " ").title()
