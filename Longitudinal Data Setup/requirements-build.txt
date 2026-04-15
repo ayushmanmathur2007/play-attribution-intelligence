@@ -1,0 +1,11 @@
+# Pipeline-build-time deps. Only needed to regenerate data from scratch:
+#   python -m src.generator.run
+#   python -m src.pipeline.build
+# Not required for serving the Streamlit UI.
+
+scikit-learn==1.5.2
+statsmodels==0.14.2
+ruptures==1.1.9
+# sentence-transformers is optional — the embeddings stage degrades
+# gracefully to the PCA-only path if it's absent. Install explicitly:
+#   pip install sentence-transformers==3.0.1

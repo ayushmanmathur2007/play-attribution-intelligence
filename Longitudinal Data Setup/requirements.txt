@@ -1,0 +1,12 @@
+# Streamlit Cloud serving deps. The pre-built data in data/ means we don't
+# need the heavy ML/stats stack at serving time — that's build-time only.
+#
+# For local development (regenerating data + running the pipeline):
+#   pip install -r requirements.txt -r requirements-build.txt
+
+streamlit==1.39.0
+pandas==2.2.2
+numpy==1.26.4
+pyarrow==16.1.0
+plotly==5.24.1
+duckdb==1.1.1

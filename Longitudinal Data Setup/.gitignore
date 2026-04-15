@@ -1,0 +1,10 @@
+# Pre-built demo data is committed on purpose so Streamlit Cloud can serve
+# this instantly with no cold-start pipeline build. If you want to regenerate:
+#   bash scripts/bootstrap.sh
+# will rebuild in place.
+
+__pycache__/
+*.pyc
+.DS_Store
+.venv/
+*.egg-info/

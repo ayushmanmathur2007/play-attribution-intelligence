@@ -6,6 +6,12 @@
       "runtimeExecutable": "/Users/ayushman/G Play PoC/.venv/bin/streamlit",
       "runtimeArgs": ["run", "src/ui/app.py", "--server.port", "8501", "--server.headless", "true", "--browser.gatherUsageStats", "false"],
       "port": 8501
+    },
+    {
+      "name": "longitudinal",
+      "runtimeExecutable": "/Users/ayushman/G Play PoC/.venv/bin/streamlit",
+      "runtimeArgs": ["run", "Longitudinal Data Setup/src/ui/app.py", "--server.port", "8502", "--server.headless", "true", "--browser.gatherUsageStats", "false"],
+      "port": 8502
     }
   ]
 }
